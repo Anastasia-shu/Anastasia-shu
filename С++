@@ -1,0 +1,418 @@
+#include <cstdlib>
+#include <iostream>
+#include <conio.h>
+#include "struct.h"
+#include "functions.h"
+using namespace std;
+
+int main()
+{
+
+	short deistvie;
+	sklad* BeginQ = NULL, * EndQ = NULL;
+
+	while (true)
+	{
+		cout << "1 — Add record\n";
+		cout << "2 — To edit the entry\n";
+		cout << "3 — Remove from the queue\n";
+		cout << "4 — Show entries\n";
+		cout << "5 — Task 1\n";
+		cout << "6 — Task 2\n";
+		cout << "7 — Task 3\n";
+		cout << "0 - Output\n";
+		cin >> deistvie;
+
+		switch (deistvie)
+		{
+		case 1:
+			add(BeginQ, EndQ); break;
+		case 2:
+			edit(BeginQ); break;
+		case 3:
+			remove(BeginQ, EndQ); break;
+		case 4:
+			show(BeginQ); break;
+		case 5:
+			task1(BeginQ); break;
+		case 6:
+			task2(BeginQ); break;
+		case 7:
+			task3(BeginQ); break;
+		case 0:
+			return 0;
+		}
+		cout << "Click Enter\n";
+		_getch();
+	}
+	return 0;
+}
+
+obo.h
+#include <iostream>
+
+struct  sklad
+{
+	int id;
+
+	char equipment[40];//наименование оборудования
+
+	struct
+	{
+		int day, month, year;//дата покупки
+	} date;
+
+	struct
+	{
+		int daylast, monthlast, yeariast;//дата истечения гарантии
+	} dateiast;
+
+	double cost;//стоимость
+	
+	char firm[40];//фирма - производитель
+	
+	sklad* next;
+};
+
+func.h
+void readCorrectDate(int* day, int* month, int* year);
+bool CorrectData(int* day, int* month, int* year);
+void readCorrectName(char* equipment);
+void readCorrectFirma(char* firm);
+void readCorrectDateLast(int* daylast, int* monthlast, int* yearlast);
+bool CorrectDataLast(int* daylast, int* monthlast, int* yearlast);
+
+
+void add(sklad*& BeginQ, sklad*& EndQ);
+void remove(sklad*& BeginQ, sklad*& EndQ);
+void edit(sklad*& BeginQ);
+void show(sklad*& BeginQ);
+
+void task1(sklad*& BeginQ);
+
+void task2(sklad*& BeginQ);
+
+void task3(sklad*& BeginQ);
+func.cpp
+#include <iostream>
+#include <Windows.h>
+#include <conio.h>
+#include <time.h>
+#include <stdio.h>
+#include <string.h>
+#include "struct.h"
+#include "functions.h"
+#pragma warning(disable: 4996)
+using namespace std;
+
+bool CorrectData(int* day, int* month, int* year) 
+    {
+            bool d;
+            if ((*month == 1) || (*month == 3) || (*month == 5) || (*month == 7) || (*month == 8) || (*month == 10) || (*month == 12))
+            {
+                if ((*day <= 31) && (*day > 0)) d = true;
+                else d = false
+            }
+            else if ((*month == 4) || (*month == 6) || (*month == 9) || (*month == 11))
+            {
+                if (*day <= 30) && (*day > 0)) d = true;
+                else d = false;
+            }
+            else if (*month == 2)
+            {
+                if ((*year % 4 == 0) || ((*year % 100 == 0) && (*year % 400 == 0))) {
+                 if ((*day <= 28) &&  (*day > 0))  d = true;
+                 else d = false; }
+                else if ((*day <= 28) &&  (*day > 0)) d = true;
+            }
+            else d = false;
+        return d;
+    }
+void readCorrectDate(int* day, int* month, int* year)
+{
+	while (!(cin >> *day >> *month >> *year) || !(CorrectData(day, month, year)) || (cin.peek() != '\n'))
+	{
+		cin.clear();
+		cout << "Дата не верна.Повторите попытку.\nДата покупки(DD MM YYYY): ";
+		while (cin.get() != '\n');
+	}
+}
+
+bool CorrectDataLast(int* daylast, int* monthlast, int* yearlast) 
+    {
+            bool d;
+            if ((*monthlast == 1) || (*monthlast == 3) || (*monthlast == 5) || (*monthlast == 7) || (*monthlast == 8) || (*monthlast == 10) || (*monthlast == 12))
+            {
+                if ((*daylast <= 31) && (*daylast > 0)) d = true;
+                else d = false
+            }
+            else if ((*monthlast == 4) || (*monthlast == 6) || (*monthlast == 9) || (*monthlast == 11))
+            {
+                if (*daylast <= 30) && (*daylast > 0)) d = true;
+                else d = false;
+            }
+            else if (*monthlast == 2)
+            {
+                if ((*yearlast % 4 == 0) || ((*yearlast % 100 == 0) && (*yearlast % 400 == 0))) {
+                 if ((*daylast <= 28) &&  (*daylast > 0))  d = true;
+                 else d = false; }
+                else if ((*daylast <= 28) &&  (*daylast > 0)) d = true;
+            }
+            else d = false;
+        return d;
+    }
+void readCorrectDateLast(int* daylast, int* monthlast, int* yearlast)
+{
+	while (!(cin >> *daylast >> *monthlast >> *yearlast) || !(CorrectData(daylast, monthlast, yearlast)) || (cin.peek() != '\n'))
+	{
+		cin.clear();
+		cout << "Дата не верна.Повторите попытку.\nДата покупки(DD MM YYYY): ";
+		while (cin.get() != '\n');
+	}
+
+}
+
+
+void readCorrectName(char* equipment)
+{
+
+	while (!(cin >> equipment) || (cin.peek() != '\n'))
+	{
+		cin.clear();
+		cout << "Введено неверно, попробуйте еще раз.\nНаименование оборудования): ";
+		while (cin.get() != '\n');
+	}
+
+}
+
+void readCorrectFirma(char* firm)
+{
+
+	while (!(cin >> firm) || (cin.peek() != '\n'))
+	{
+		cin.clear();
+		cout << "Введено неверно, попробуйте еще раз.\nФирма - производитель): ";
+		while (cin.get() != '\n');
+	}
+
+}
+
+void add(sklad*& BeginQ, item*& EndQ)
+{
+	sklad* p = new sklad;
+	p->id = EndQ ? EndQ->id + 1 : 1;
+	p->next = NULL;
+	SetConsoleOutputCP(1251);
+	SetConsoleCP(1251);
+	cout << "Добавление записи #" << p->id << " \n";
+	cout << "Наименование оборудования: ";
+	readCorrectName(p->equipment);
+	cout << "Стоимость: "; cin >> p->cost;
+	cout << "Дата покупки(DD MM YYYY):";
+	readCorrectDate(&p->date.day, &p->date.month, &p->date.year)
+	cout << "Дата истечения гарантии(DD MM YYYY):";
+	readCorrectDateLate(&p->date.daylate, &p->date.monthlate, &p->date.yearlate);
+	cout << "Фирма - производитель: "; 
+	readCorrectSex(p->firm);
+	cout << "\n";
+
+	if (EndQ)
+		EndQ->next = p;
+	else
+		BeginQ = p;
+	EndQ = p;
+}
+
+void remove(sklad*& BeginQ, sklad*& EndQ)
+{
+	if (!BeginQ)
+	{
+		cout << "Нет записи, удаление невозможно";
+		return;
+	}
+
+	cout << "Запись #" << BeginQ->id << " удалена";
+
+	sklad* p = BeginQ->next;
+	delete(BeginQ);
+	BeginQ = p;
+	if (!BeginQ)
+		EndQ = NULL;
+}
+
+void edit(sklad*& BeginQ)
+{
+	SetConsoleOutputCP(1251);
+	SetConsoleCP(1251);
+	if (!BeginQ)
+	{
+		cout << "Редактирование невозможно, очередь пуста";
+		return;
+	}
+
+	bool flag = false;
+	int current;
+	sklad* p = BeginQ;
+
+	cout << "Укажите идентификатор записи, которую необходимо отредактировать: ";
+	cin >> current;
+
+	while (p && !flag)
+	{
+		if (p->id == current)
+			flag = true;
+		else
+			p = p->next;
+	}
+
+	if (flag)
+	{
+
+		cout << "Добавление записи #" << p->id << " \n";
+		cout << "Наименование оборудования: ";//cin >> p->equipment;
+		readCorrectName(p->equipment);
+		cout << "Стоимость: "; cin >> p->cost;
+		cout << "Дата покупки(DD MM YYYY):";
+		readCorrectDate(&p->date.day, &p->date.month, &p->date.year)
+			cout << "Дата истечения гарантии(DD MM YYYY):";
+		readCorrectDateLate(&p->date.daylate, &p->date.monthlate, &p->date.yearlate);
+		cout << "Фирма - производитель: "; //cin>>p->firm;
+		readCorrectSex(p->firm);
+		cout << "\n";
+	}
+	else
+	{
+		cout << "Запись #" << current << " не найдена.";
+	}
+}
+
+void show(sklad*& BeginQ)
+{
+	SetConsoleOutputCP(1251);;
+	if (!BeginQ)
+	{
+		cout << "Нет записей для отображения";
+		return;
+	}
+
+	sklad* p = BeginQ;
+	while (p)
+	{
+		cout << "Запись #" << p->id << ".\n";
+		cout << "Наименование оборудования: " << p->equipment << "\n";
+		cout << "Стоимость: " << p->cost << "\n";
+		cout << "Дата покупки(DD MM YYYY):" << p->date.day << " " << p->date.month << " " << p->date.year << "\n";
+			cout << "Дата истечения гарантии(DD MM YYYY):"<<p->date.daylate<<" "<<p->date.monthlate<<" "<<p->date.yearlate<<"\n";
+		cout << "Фирма - производитель: "<< p->firm<<"\n";
+		p = p->next;
+	}
+}
+
+void task1(sklad*& BeginQ)
+{
+	if (!BeginQ)
+	{
+		cout << "Искать нечего т.к. oчередь пуста";
+		return;
+	}
+
+	sklad* p = BeginQ;
+	cout << "Список оборудования, на которое истечет гарантия во втором полугодии следующего года\n";
+
+	p = BeginQ;
+	while (p)
+	{
+		if ((date.monthlate >6) &&(date.yearlate==2021)) cout << p->equipment << "\n";
+		p = p->next;
+	}
+
+}
+
+void task2(sklad*& BeginQ)
+{
+	if (!BeginQ)
+	{
+		cout << "Искать нечего т.к. oчередь пуста";
+		return;
+	}
+
+	struct stoimost {
+		char firm[40];
+		double cost;
+		stoimost* bottom;
+	};
+
+	stoimost* top = NULL;
+
+
+	sklad* p = BeginQ;
+	while (p)
+	{
+		stoimost* q = top;
+		bool flag = false;
+		while (q && !flag)
+		{
+			if (!strcmp(q->firm, p->firm))
+			{
+				q->cost += p->cost;
+				flag = true;
+			}
+			else
+			{
+				q = q->bottom;
+			}
+		}
+		if (!flag)
+		{
+			stoimost* q = new stoimost;
+			strcpy(q->firm, p->firm);
+			q->cost = p->cost;
+			q->bottom = top;
+			top = q;
+		}
+		p = p->next;
+	}
+
+	int num = 0;
+	cout << "Общая стоимость оборудования, выпущенного каждой из встречающихся фирмпроизводителей:\n";
+	while (top)
+	{
+
+		cout << ++num << ": \n" << top->firm << " Общая стоимость - " << top->cost << " \n";
+		stoimost* q = top->bottom;
+		delete(top);
+		top = q;
+	}
+}
+
+void task3(sklad*& BeginQ)
+{
+	if (!BeginQ)
+	{
+		cout << Искать нечего т.к. oчередь пуста;
+		return;
+	}
+
+	struct {
+		int count;
+		char name[9];
+	} month[12] = { { 0, 0,0,"Январь" },{ 0, 0,0, "Февраль" },{ 0, 0,0, "Март" },{ 0, 0,0, "Апрель" },{ 0, 0,0, "Май" },{0, 0,0, "Июнь" },
+	{ 0, 0,0, "Июль" },{ 0, 0,0, "Август" },{ 0, 0,0, "Сентябрь" },{ 0, 0,0, "Октябрь" },{ 0, 0,0, "Ноябрь" },{ 0, 0,0, "Декабрь" } };
+
+
+	sklad* p = BeginQ;
+
+	p = BeginQ;
+	while (p)
+	{
+		if (p->date.year == 2019)
+			month[p->date.month - 1].count += 1;
+		p = p->next;
+	}
+	cout << "Количество оборудования, приобретенного за каждый месяц прошлого года:\n";
+	for (int i = 0; i < 12; i++)
+	{
+		if (month[i].count == 0)continue;
+		cout << month[i].name << " - " << month[i].count << "\n";
+	}
+}
