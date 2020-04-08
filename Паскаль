@@ -1,0 +1,67 @@
+program proctyp;
+const n=8;
+const m=5;
+
+type
+bb=array[1..n, 1..m] of integer;
+cc=array[1..m] of integer;
+
+var
+sum, p:integer; 
+a:bb;
+b:cc;
+f:cc;
+i1, j1:integer;
+function Func(a:cc):real;
+
+var sum, p, fun: real;
+j:integer;
+begin
+sum:=0;
+p:=0;
+fun:=0;
+ forj:=2 to m do
+ begin
+ if(a[j]>0) then 
+ sum:=sum+sqr(a[j]);
+ p:=p+1;
+  begin
+  if(p<>0) then fun:=sqrt(sum/p);
+  end;
+ end;
+ Func:=fun;
+end;
+
+
+procedure output(a:cc);
+var i:integer;
+ begin
+ for i:= 1 to n do
+  begin
+  writeln (a[i]);
+  end;
+end;
+
+procedure input(var a:cc);
+var i,j:integer;
+begin
+for i:=1 to n do
+begin
+forj:=1 to m do
+readln(a[i,j]);
+end;
+end;
+
+
+begin
+input;
+fori1:=1 to n do
+begin
+forj1:=1 to m do
+begin
+f[j1]:=a[i1][j1];
+end;
+b[i1]:=Func(f);
+end;
+      output(b);
+end.
