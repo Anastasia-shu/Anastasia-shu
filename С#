@@ -1,0 +1,423 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace лабораторная1кв
+{
+    public class Matrix
+    {
+        private double[,] matrix;
+        private int Row, Col;
+
+        //конструктор 
+        public Matrix(int row, int col)
+        {
+            matrix = new double[row, col];
+            Row = row; Col = col;
+            if (row <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(row), row, "Индекс вне диапазона!");
+            }
+            else
+                if (col <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(col), col, "Индекс вне диапазона!");
+            }
+            else
+                matrix = new double[row, col];
+        }
+
+        //конструктор без параметров
+        public Matrix()
+        {
+            int N = 2;
+            matrix = new double[N, N];
+            Row = Col = N;
+        }
+
+        public int row
+        {
+            get { return Row; }
+            set
+            {
+                if (Row != value)
+                    Row = value;
+            }
+        }
+        public int col
+        {
+            get { return Col; }
+            set
+            {
+                if (Col != value)
+                    Col = value;
+            }
+
+        }
+
+        //доступ к элементу по индексам
+        public double this[int i, int j]
+        {
+            get
+            {
+                if (i >= Row || i < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(i), i, "Индекс вне диапазона!");
+                }
+                if (j >= Col || j < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(j), j, "Индекс вне диапазона!");
+                }
+                return matrix[i, j];
+            }
+            set
+            {
+                if (i >= Row || i < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(i), i, "Индекс вне диапазона!");
+                }
+                if (j >= Col || j < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(j), j, "Индекс вне диапазона!");
+                }
+                matrix[i, j] = value;
+            }
+        }
+
+
+        //произведение матриц
+        public static Matrix operator *(Matrix one, Matrix second)
+        {
+            Matrix matr = new Matrix(one.Row, one.Col);
+            for (int i = 0; i < one.Row; i++)
+            {
+                for (int j = 0; j < second.Col; j++)
+                {
+                    double sum = 0;
+                    for (int r = 0; r < one.Col; r++)
+                        sum += one[i, r] * second[r, j];
+                    matr[i, j] = sum;
+                }
+            }
+            return matr;
+        }
+
+        //умножение на число
+        public static Matrix operator *(Matrix m, double t)
+        {
+            Matrix mat = new Matrix(m.Row, m.Col);
+            for (int i = 0; i < m.Row; i++)
+                for (int j = 0; j < m.Col; j++)
+                    mat[i, j] = m[i, j] * t;
+            return mat;
+        }
+        //деление на число
+        public static Matrix operator /(Matrix m, double u)
+        {
+            Matrix del = new Matrix(m.Row, m.Col);
+            for (int i = 0; i < m.Row; i++)
+                for (int j = 0; j < m.Col; j++)
+                    del[i, j] = m[i, j] / u;
+            return del;
+        }
+
+        //возведение в степень
+        public static Matrix operator ^(Matrix one, int pow)
+        {
+            Matrix matr = new Matrix(one.Row, one.Col);
+            matr = one;
+            if (pow >= 1)
+            {
+                for (int z = 1; z < pow; z++)
+                {
+                    Matrix bufer = new Matrix(one.Row, one.Col);
+                    for (int i = 0; i < one.Row; i++)
+                    {
+                        for (int j = 0; j < one.Row; j++)
+                        {
+                            double sum = 0;
+                            for (int r = 0; r < one.Row; r++)
+                                sum += matr[i, r] * one[r, j];
+                            bufer[i, j] = sum;
+                        }
+                    }
+                    matr = bufer;
+                }
+                return matr;
+            }
+            else return null;
+        }
+        //норма матрицы
+        public static double Norma1(Matrix one)
+        {
+            Matrix matx = new Matrix(one.Row, one.Col);
+            matx = one;
+            double temp, max = 0;
+            for (int i = 0; i < one.Row; i++)
+            {
+                temp = 0;
+                for (int j = 0; j < one.Row; j++)
+                {
+                    temp += matx[i, j];
+                }
+                if (temp > max) max = temp;
+            }
+            Console.WriteLine(max);
+            return max;
+        }
+        public static double Norma2(Matrix one)
+        {
+            Matrix matrx = new Matrix(one.Row, one.Col);
+            matrx = one;
+            double tem, maxi = 0;
+            for (int j = 0; j < one.Row; j++)
+            {
+                tem = 0;
+                for (int i = 0; i < one.Row; i++)
+                {
+                    tem += matrx[i, j];
+                }
+                if (tem > maxi) maxi = tem;
+            }
+            Console.WriteLine(maxi);
+            return maxi;
+        }
+
+        public static double Norma3(Matrix one)
+        {
+            Matrix matrixa = new Matrix(one.Row, one.Col);
+            matrixa = one;
+            double temp, summa = 0, sum = 0;
+            for (int i = 0; i < one.Row; i++)
+            {
+                temp = 0;
+                for (int j = 0; j < one.Row; j++)
+                {
+                    temp += matrixa[i, j] * matrixa[i, j];
+                }
+                sum += temp;
+            }
+            summa = Math.Sqrt(sum);
+            Console.WriteLine(summa);
+            return summa;
+        }
+        //распечатать матрицу
+        public void PrintMatrix()
+        {
+            for (int i = 0; i < this.Row; i++)
+            {
+                for (int j = 0; j < this.Col; j++)
+                    Console.Write("{0}  ", this[i, j]);
+                Console.Write("\n");
+            }
+
+        }
+
+        //Определитель матрицы
+        public static double Det(Matrix one)
+        {
+            Matrix mat = new Matrix(one.Row, one.Col);
+            mat = one;
+            double detA, k, buf;
+
+            int max, j, z = 0, p, s, zam, c = 0, r;
+
+            max = 1; 
+
+            detA = 1; 
+
+            zam = 0; 
+            for (c = 0; c < one.Row - 2; c++)
+            {
+                for (z = 0; z < one.Row - 2; z++)
+                {
+                    max = z;
+                }
+
+                for (j = z + 2; j < one.Row; j++)
+                {
+                    if ((Math.Abs(mat[c, j])) > (Math.Abs(mat[c, max]))) 
+                        max = j;
+                }
+            }
+            
+            for (p = 0; p < one.Row; p++)
+            {
+                buf = mat[p, z]; mat[p, z] = mat[p, max]; buf = mat[p, max];
+            }
+
+            for (r = c; r < one.Row; r++)
+            {
+                k = mat[c, r] / mat[c, c];
+
+                for (s = 0; s < one.Row; s++)
+                    mat[s, r] = mat[s, r] - mat[s, c] * k;
+            }
+
+            if (c != max)
+            {
+                zam++;
+            }
+
+            for (c = 0; c < one.Row; c++)
+            {
+                detA = detA * mat[c, c];
+
+                if (zam % 2 != 0)
+
+                    detA = (-1) * detA;
+
+            }
+            Console.WriteLine(detA);
+            return detA;
+        }
+        public Matrix Exclude(int row, int column)
+        {
+            if (row > Row || column > Col) throw new IndexOutOfRangeException("Строка или столбец не принадлежат матрице.");
+            Matrix ret = new Matrix(Row - 1, Col - 1);
+            int offsetR = 0;
+            for (int i = 0; i < Row; i++)
+            {
+                int offsetC = 0;
+                if (i == row) { offsetR++; continue; }
+                for (int t = 0; t < Col; t++)
+                {
+                    if (t == column) { offsetC++; continue; }
+                    ret[i - offsetR, t - offsetC] = this[i, t];
+                }
+            }
+            return ret;
+        }
+        
+         public static Matrix Inverse(Matrix second, Matrix one, uint round = 0)
+        {
+            if (second.Row != second.Col) throw new ArgumentException("Обратная матрица существует только для квадратных, невырожденных, матриц.");
+            Matrix matrix = new Matrix(second.Row, second.Col); 
+            matrix = second;
+            double determinant = Det(second); 
+      
+            if (determinant == 0) return matrix; 
+
+            for (int i = 0; i < second.Row; i++)
+            {
+                for (int t = 0; t < second.Col; t++)
+                {
+                    Matrix tmp = second.Exclude(i, t);  
+                    matrix[t, i] = round == 0 ? (1 / determinant) * Math.Pow(-1, i + t) * Det(tmp) : Math.Round(((1 / determinant) * Math.Pow(-1, i + t) * Det(tmp)), (int)round, MidpointRounding.ToEven);
+                    
+                }
+            }
+            
+            Matrix matr = new Matrix(one.Row, one.Col);
+            for (int i = 0; i < one.Row; i++)
+            {
+                for (int j = 0; j < matrix.Col; j++)
+                {
+                    double sum = 0;
+                    for (int r = 0; r < one.Col; r++)
+                        sum += one[i, r] * matrix[r, j];
+                    matr[i, j] = sum;
+                }
+            }
+            return matr;
+        }
+
+
+        class Program
+        {
+            public static void Main()
+            {
+                //размерность
+                int N = 2;
+                //степень
+                int pow = 4;
+
+                Random rand = new Random();
+                Matrix one = new Matrix();
+                Matrix second = new Matrix();
+
+                for (int i = 0; i < N; i++)
+                    for (int j = 0; j < N; j++)
+                    {
+                        one[i, j] = rand.Next(1, 5);
+                        second[i, j] = rand.Next(1, 5);
+                    }
+
+                while (true)
+                {
+                    Console.WriteLine("\nМеню: \n" +
+                        "1) Вывод матриц на экран\n" +
+                        "2) Нормы матрицы\n" +
+                        "3) Определитель матрицы\n" +
+                        "4) Умножение на число\n" +
+                        "5) Деление на число\n" +
+                        "6) Деление матриц\n" +
+                        "7) Произведение матриц\n" +
+                        "8) Степень матрицы\n" +
+                        "9) Комбинированное присваивание *=\n" +
+                        "10) Комбинированное присваивание /=\n" +
+                        "11) Выход/=\n");
+
+                    int num = Int16.Parse(Console.ReadLine());
+                    switch (num)
+                    {
+                        case 1:
+                            Console.WriteLine("\n\nПервая матрица:\n");
+                            one.PrintMatrix();
+                            Console.WriteLine("\n\nВторая матрица:\n");
+                            second.PrintMatrix();
+                            break;
+                        case 2:
+                            Console.WriteLine("\n\n Норма матрицы первого типа(по строчкам):");
+                            Norma1(one);
+                            Console.WriteLine("\n Норма матрицы второго типа(по столбцам):");
+                            Norma2(one);
+                            Console.WriteLine("\n Норма матрицы третьего типа(корень):");
+                            Norma3(one);
+                            break;
+                        case 3:
+                            Console.WriteLine("\n\n Определитель матрицы:\n");
+                            Det(one);
+                            break;
+                        case 4:
+                            Console.WriteLine("\n\nУмножение на число:\n");
+                            (one * 3).PrintMatrix();
+                            break;
+                        case 5:
+                            Console.WriteLine("\n\nДеление на число:\n");
+                            (one / 2).PrintMatrix();
+                            break;
+                        case 6:
+                            Console.WriteLine("\n\nДеление матрицы на матрицу:\n");
+                            Inverse(second, one, 0);
+                            break;
+                        case 7:
+                            Console.WriteLine("\n\nПроизведение матриц:\n");
+                            (one * second).PrintMatrix();
+                            break;
+                        case 8:
+                            Console.WriteLine("\n\n{0} Степень матрицы:\n", pow);
+                            (one ^ pow).PrintMatrix();
+                            break;
+                        case 9:
+                            Console.WriteLine("\n\n *=:\n");
+                            (one *= second).PrintMatrix();
+                            break;
+                        case 10:
+                            Console.WriteLine("\n\n /=:\n");
+                            (one /= 3).PrintMatrix();
+                            break;
+                        case 11:
+                            Environment.Exit(0);
+                            break;
+                        default:
+                            Console.WriteLine("Ошибка ввода номера команды");
+                            break;
+
+                    }
+                }
+            }
+        }
+    }
+}
